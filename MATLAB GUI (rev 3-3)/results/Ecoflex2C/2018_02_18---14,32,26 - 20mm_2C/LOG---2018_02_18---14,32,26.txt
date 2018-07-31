@@ -1,0 +1,57 @@
+
+
+=======2018_02_18, 14:32:27=======
+
+Starting Program
+SD card initialization failed
+Setup the Device
+firstCall=0
+
+
+=======2018_02_18, 14:32:39=======
+
+READ------
+READ Settings from EEPORM
+0	0
+0	0
+1	3
+1	7
+0	3
+0	7
+0	0
+0	0
+
+
+=======2018_02_18, 14:32:41=======
+
+ON--------
+Turn ON Data Collection
+Collect Data: Turn On
+
+
+=======2018_02_18, 14:34:02=======
+
+OFF-------
+Turn OFF Data Collection
+Collect Data: Turn Off
+
+
+=======2018_02_18, 14:34:32=======
+
+OFF-------
+Turn OFF Data Collection
+Collect Data: Turn Off
+
+
+=======2018_02_18, 14:35:02=======
+
+OFF-------
+Turn OFF Data Collection
+Collect Data: Turn Off
+
+
+=======2018_02_18, 14:35:39=======
+
+OFF-------
+Turn OFF Data Collection
+Collect Data: Turn Off
