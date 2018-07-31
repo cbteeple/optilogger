@@ -13,7 +13,7 @@ OptiLogger is aset of arduino code and MATLAB code that coordinates data collect
 - The *i2c IN* pins of the mux are connected to the *i2c* pins on the MCU (pins A4 and A5).
 - The gate on the MOSFET for each LED driver circuit is connected to pins D5-D12 on the MCU.
 - 3.3V power is fed to BOTH the mux AND the light intensity sensors
-- 5.0V power is fed to the LEDs only. **Do not connect 3.3V to the light sensors. They will burn up!**
+- 5.0V power is fed to the LEDs only. **Do not connect 5V to the light sensors. They will burn up!**
 
 ## Software
 ### Arduino
