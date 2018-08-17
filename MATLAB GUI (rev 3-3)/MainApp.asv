@@ -207,7 +207,7 @@ function sensorMultiplier_Callback(hObject, eventdata, handles)
     val = get(hObject,'Value');
     mult = handles.multiplierEnums(val);
     
-    outStr='MOD';
+    outStr='MOD---';
     outStr(4) = num2str(sensorNum);
     outStr(5) = num2str(handles.States(sensorNum+1,1));
     outStr(6) = num2str(mult);
@@ -265,7 +265,7 @@ function SensorOff_Callback(hObject, eventdata, handles)
     outStr(5) = num2str(0);
     outStr(6) = num2str(mult);
 
-fprintf(handles.s,'%s\n',outStr);
+fprintf(handles.s,'%c',outStr);
 
 %pause(0.3);
 
@@ -300,7 +300,7 @@ function SensorOn_Callback(hObject, eventdata, handles)
     outStr(6) = num2str(mult);
     outStr
 
-fprintf(handles.s,'%s\n',outStr);
+fprintf(handles.s,'%c',outStr);
 guidata(handles.figure1, handles);
 
 %pause(0.3);
@@ -364,7 +364,7 @@ function StartButton_Callback(hObject, eventdata, handles)
         handles.s.BytesAvailableFcn = {@serialEventHandler,handles.output};
         
         
-        fprintf(handles.s,'%s\n','ON');
+        fprintf(handles.s,'%c\n','ON');
             pause(0.3);   
              
             
@@ -418,7 +418,7 @@ function StopButton_Callback(hObject, eventdata, handles)
         %Send Serial Command
             
             handles.s.BytesAvailableFcn = {@serialEventHandlerBlank,handles.output};
-            fprintf(handles.s,'%s\n','OFF');
+            fprintf(handles.s,'%c\n','OFF');
             
             guidata(handles.figure1, handles);
             pause(0.3);
@@ -576,7 +576,7 @@ function getFreq_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-fprintf(handles.s,'%s\n','RDFREQ');
+fprintf(handles.s,'%c\n','RDFREQ');
 
 
 
@@ -595,7 +595,7 @@ function SaveStates_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-fprintf(handles.s,'%s\n','SAVE');
+fprintf(handles.s,'%c\n','SAVE');
 
 
 
@@ -606,7 +606,7 @@ function ReadStates_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-fprintf(handles.s,'%s\n','READ');
+fprintf(handles.s,'%c\n','READ');
 
 
 
@@ -658,7 +658,7 @@ if ~isempty(buff)
     
     if length(buff)>=2     
         if contains(buff{2},'Unrecognized')
-            %fprintf(handles.s,'%c',[buff{1}(2:end)]);
+            fprintf(handles.s,'%c',[buff{1}(2:end)]);
             %fixSerial_Callback(hObject, event, handles);
             return
         end
@@ -858,7 +858,7 @@ function ResetSD_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-fprintf(handles.s,'%s\n','RS01');
+fprintf(handles.s,'%c','RS01------');
 
 
 
@@ -924,7 +924,11 @@ function SendSDNum_Callback(hObject, eventdata, handles)
 
 
 str=get(handles.SDNum,'String');
-fprintf(handles.s,'%s\n',['SDN',str]);
+dash='-------';
+dash(1:length(str))=str;
+
+fprintf(handles.s,'%c',['SDN',dash]);
+
 
 guidata(handles.output, handles);
 
@@ -935,9 +939,9 @@ function pressureOnButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if get(hObject,'Value')
-    fprintf(handles.s,'%s\n','PRESON');
+    fprintf(handles.s,'%c','PRESON');
 else
-    fprintf(handles.s,'%s\n','PRESOFF');
+    fprintf(handles.s,'%c','PRESOFF');
 end
 handles.pressureOn=hObject.Value;
 guidata(handles.output, handles);
@@ -952,7 +956,7 @@ function triggered_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of triggered
 
 if get(hObject,'Value')
-    fprintf(handles.s,'%s\n','TRIGON');
+    fprintf(handles.s,'%c','TRIGON');
 else
-    fprintf(handles.s,'%s\n','TRIGOFF');
+    fprintf(handles.s,'%c','TRIGOFF');
 end
