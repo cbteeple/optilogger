@@ -49,7 +49,7 @@ There is a matlab GUI that can send all of these commands, and recieve and store
 ## [ChangeLog]
 Check out the [change log] for info about new versions
 
-**NEW VERSION SHOULD WORK ON MAC NOW!**
+**NEW VERSION SHOULD WORK ON MAC NOW!** [2018_08_17]
 
 [CHANGELOG]: https://github.com/cbteeple/optilogger/blob/master/CHANGELOG.md
 [CHANGE LOG]: https://github.com/cbteeple/optilogger/blob/master/CHANGELOG.md
