@@ -54,6 +54,7 @@
 //ANALOG PRESSURE GAUGE
     int pressurePin = 7;
     float pressure=0;
+    bool pressureOn=false;
  
 
 //SD CARD READER

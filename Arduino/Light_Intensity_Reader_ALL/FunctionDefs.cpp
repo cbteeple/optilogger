@@ -262,7 +262,9 @@ CustomFuns::CustomFuns();
     void CustomFuns::AquireData(){
 
         long t_out=millis();
-        pressure= CustomFuns::GetPressureData();
+        if (pressureOn){
+          pressure= CustomFuns::GetPressureData();
+        }
         
         for(int sensorNum=0; sensorNum < numberOfSensors; sensorNum++){
               
@@ -314,9 +316,12 @@ CustomFuns::CustomFuns();
                  }
                 }  
 
-              Serial.print('\t');
-              Serial.print(pressure);
-              Serial.println(' ');
+              if (pressureOn){
+                Serial.print('\t');
+                Serial.print(pressure);
+              }
+
+              Serial.print('\n'); //End the line
             }
       
       

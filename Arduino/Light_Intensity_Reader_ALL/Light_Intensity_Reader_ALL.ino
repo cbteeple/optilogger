@@ -116,6 +116,7 @@ void triggerISR(){
 void readSerial(){
   while (Serial.available()>0){
     String command = Serial.readStringUntil('\n');
+    command.toUpperCase();
     processCommand(command);
   }
 }
@@ -171,7 +172,15 @@ void processCommand(String command){
       else{
         triggerMode=0;
       }
-    }   
+    } 
+    else if (command.startsWith("PRES")){
+      if (command.substring(4,6)=="ON"){
+        pressureOn=true;
+      }
+      else{
+        pressureOn=false;
+      }
+    } 
     else if (command.startsWith("FREQ")){
       myFuns.UpdateFreq(command);
     }

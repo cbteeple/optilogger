@@ -53,6 +53,7 @@
 
         extern int pressurePin;
         extern float pressure;
+        extern bool pressureOn;
 
 
 //SD CARD READER
