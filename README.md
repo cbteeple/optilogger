@@ -46,7 +46,10 @@ Based on commands from a computer, the built-in sensitivity ranges of the sensor
 ### MATLAB GUI
 There is a matlab GUI that can send all of these commands, and recieve and store data. It is pretty user-friendly, so documentation is sparse.
 
-**NEW VERSION SHOULD WORK ON MAC NOW**
+## [ChangeLog]
+Check out the [change log] for info about new versions
 
+**NEW VERSION SHOULD WORK ON MAC NOW!**
 
-
+[CHANGELOG]: https://github.com/cbteeple/optilogger/blob/master/CHANGELOG.md
+[CHANGE LOG]: https://github.com/cbteeple/optilogger/blob/master/CHANGELOG.md
