@@ -59,7 +59,10 @@ handles.MainFile = mfilename;
 
 %Switch the folder
     fullpath=mfilename('fullpath');
-    idx=strfind(fullpath,'\');
+    
+    
+    
+    idx=strfind(fullpath,filesep);
     currPath=fullpath(1:idx(end))
     cd(currPath)
 
@@ -104,10 +107,10 @@ handles.MainFile = mfilename;
         dateStr=datestr(now,'yyyy_mm_dd---HH,MM,SS');
         filename = ['LOG---',dateStr,'.txt'];
         
-        handles.dataFileDir=['data/',dateStr,'/'];
+        handles.dataFileDir=fullfile('data',dateStr);
         mkdir(handles.dataFileDir);
         
-        handles.logFileID = fopen([handles.dataFileDir,filename],'a');
+        handles.logFileID = fopen(fullfile(handles.dataFileDir,filename),'a');
         handles.logFileOpen=0;
         
         
@@ -323,7 +326,7 @@ function StartButton_Callback(hObject, eventdata, handles)
                
         %Set the Save Filename
             filename = ['DATA---',datestr(now,'yyyy_mm_dd---HH,MM,SS'),'.txt'];
-            handles.dataFileID = fopen([handles.dataFileDir,filename],'a');
+            handles.dataFileID = fopen(fullfile(handles.dataFileDir,filename),'a');
             handles.dataFileOpen=1;
             disp(['Starting Save in: ',filename]);
         
@@ -622,6 +625,7 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
  
  fclose('all');
 instrreset
+rmpath(genpath(pwd), '-end')
 
 delete(hObject);
 

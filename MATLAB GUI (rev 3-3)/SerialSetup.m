@@ -70,7 +70,7 @@ function SerialSetup_OpeningFcn(hObject, eventdata, handles, varargin)
         
         
         
-        handles.savePath = 'settings\';
+        handles.savePath = 'settings';
         handles.saveFile = 'Current_Serial_Setting.mat';
         handles.jObj=0;
         
@@ -86,8 +86,8 @@ function SerialSetup_OpeningFcn(hObject, eventdata, handles, varargin)
     %Set up instrument
         %instrreset
         %Load in the last serial settings used.
-            if exist([handles.savePath, handles.saveFile]) 
-                load([handles.savePath, handles.saveFile]);
+            if exist(fullfile(handles.savePath, handles.saveFile)) 
+                load(fullfile(handles.savePath, handles.saveFile));
                 handles.s= s_save;
 
                 %Set the front panel controls accordingly
@@ -157,7 +157,7 @@ function ConnectButton_Callback(hObject, eventdata, handles)
 
     %Save the serial object for future use
         s_save=handles.s;
-        save([handles.savePath, handles.saveFile], 's_save');
+        save(fullfile(handles.savePath, handles.saveFile), 's_save');
         assignin('base', 's_save',s_save);
 
     % call ReadData function if buffer contains uint16 (2 bytes)
