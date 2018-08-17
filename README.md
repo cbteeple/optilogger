@@ -46,7 +46,7 @@ Based on commands from a computer, the built-in sensitivity ranges of the sensor
 ### MATLAB GUI
 There is a matlab GUI that can send all of these commands, and recieve and store data. It is pretty user-friendly, so documentation is sparse.
 
-**This has only been tested on Windows. It's possible it won't work on a Mac**
+**NEW VERSION SHOULD WORK ON MAC NOW**
 
 
 
