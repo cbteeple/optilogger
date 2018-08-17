@@ -4,251 +4,187 @@
 
 CustomFuns myFuns;
 
-
+//Pin to use for the trigger interrupt
 const byte interruptPin = 2;
-boolean collectingData=0;
+
+//Program flow control
+boolean getNewSample=0;
 boolean triggerMode = 0;
 
+//Timing Vars
+unsigned long timeCurr=0;
+unsigned long timeLast=0;
+
+//_______________________________________________________________
 void setup() {
-//GENERAL
-        Serial.begin(115200);
-        Serial.setTimeout(20);
-        pinMode(interruptPin, INPUT_PULLUP);
-        attachInterrupt(digitalPinToInterrupt(interruptPin), triggerISR, RISING);
+  //SERIAL
+  Serial.begin(115200);
+  Serial.setTimeout(20);
 
-    //LEDs
-          myFuns.InitiatlizeLEDs();
-          myFuns.LEDBounce();
-          myFuns.LEDClear();
-          
-          myFuns.InitializeSensors();
+  //TRIGGER INTERRUPT
+  pinMode(interruptPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interruptPin), triggerISR, RISING);
 
-
-
-           //INTERRUPTS
-        //Set up pins for Debugging
-            //set pins as outputs
-            pinMode(togglePin, OUTPUT);
-
-        //Stop Interrupts
-            cli();
-
-        //Set up an Interrupt Timer for consistant measurements
-           myFuns.TimerMath(desiredFreq);
-           myFuns.TimerSetup();
-
-
-        //Allow interrupts again
-            sei();
-
-
-}
-
-
-//CHANGE THIS LATER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-//Set up Interrupt Service Routine
-    ISR(TIMER1_COMPA_vect){//timer1 interrupt 1Hz toggles pin 13 (LED)
-        
-    }
-
-
-
-
-
-void loop() {
-if (firstCall){
-        //Serial.println("Starting Program");
-        Serial.println("Starting Program");   // print the reading
-        Serial.println("SD card initialization failed");
-
-        Serial.println("Setup the Device");   // print the reading
-
-        for(int sensorNum=0; sensorNum < numberOfSensors ; sensorNum++){
-            myFuns.SetLightSensorSettings(sensorNum); 
-        }
-      
-        Serial.flush();
-        firstCall=0;
-        Serial.println("firstCall=0");
-        //Serial.println("firstCall=0");
-        myFuns.LEDBounce();
-        myFuns.LEDClear();
-        myFuns.LEDAll();
-    }
-
+  //LEDs
+  myFuns.InitiatlizeLEDs(); //Set all the LED pins
+  myFuns.LEDBounce(); //Do a cute bouncing animation
+  myFuns.LEDClear(); //Turn off all of th LEDs
   
-
-
-  index=0;
-boolean newSerial=0;
-
-if (Serial.available()){
-
-  inDataStr = Serial.readStringUntil('\n');
-/*while(Serial.available() > 0){
-            
-        if(index < 19) // One less than the size of the array
-        {
-            inChar = Serial.read(); // Read a character
-            inData[index] = inChar; // Store it
-            index++; // Increment where to write next
-            inData[index] = '\0'; // Null terminate the string
-        }
-        
-    }*/
-    newSerial=1;
+  //SENSORS
+  myFuns.InitializeSensors(); //Turn all of the light sensors ON
 }
 
 
-if (state){
-  if (triggerMode){
-    //Triggering mode (ON right now)
-    if (collectingData){
-      myFuns.AquireData();
-      collectingData=0;
+
+//_______________________________________________________________
+void loop() {
+  //Do some stuff if this is the first iteration of the loop.
+  //  This could probably be moved to the "setup" function,
+  //  but it's left over from when I was using a different MCU
+  if (firstCall){
+    firstCallFuns();
+    firstCall=0;
+  }
+
+  //Read Serial data and process commands if they exist
+  readSerial();
+
+  //If we are supposed to be getting data...
+  if (dataOn){
+    //If we are in trigger mode:
+    if (triggerMode){
+      //If we are supposed to get a new sample
+      if (getNewSample){
+        //Get a new sample, then clear the flag
+        myFuns.AquireData();
+        getNewSample=0;
+      }
+    }
+    //If we are not in trigger mode, then we are in sampling mode:
+    else{
+      //If it's time to get a new sample...
+      timeCurr=millis();  
+      if (timeCurr-timeLast>= desiredLoopTime){
+        //Get a new sample, then update the value of the last time in prep for the next sample
+        myFuns.AquireData();
+        timeLast=timeCurr;  
+      }
     }
   }
-  else{
-    //Stream of data (OFF right now)
-    myFuns.AquireData();
-    //delay(980);
-    delay(50);
+
+} //End the main loop
+
+
+
+
+//_______________________________________________________________
+//FIRST CALL FUNCTIONS
+void firstCallFuns(){
+  Serial.println("Starting Program");   // print the reading
+
+  //Initialize the settings arrays
+  for(int sensorNum=0; sensorNum < numberOfSensors ; sensorNum++){
+      myFuns.SetLightSensorSettings(sensorNum); 
+  }
+
+  Serial.flush();
+  Serial.println("firstCall=0");
+  //Serial.println("firstCall=0");
+  myFuns.LEDBounce();
+  myFuns.LEDClear();
+  myFuns.LEDAll();  
+  
+}
+
+
+
+//_______________________________________________________________
+//TRIGGER FUNCTIONS
+
+//Interrupt service routine for external triggering
+//  (Always runs, even if you're not using it. It's speedy so that's fine)
+void triggerISR(){
+  getNewSample=1;
+}
+
+
+
+//_______________________________________________________________
+//SERIAL CONTROL FUNCTIONS
+
+//Read serial data from the buffer, then process the revieved commands
+void readSerial(){
+  while (Serial.available()>0){
+    String command = Serial.readStringUntil('\n');
+    processCommand(command);
   }
 }
 
 
-if (newSerial){
-
-  inDataStr.toCharArray(inData, 20);
-
-
+//Process commands from serial
+void processCommand(String command){
     //Mirror the input
-    Serial.println(inDataStr);
-    if (inData[0] != '-'){
+    Serial.println(command);   
+    command.replace("-", ""); //Left over from an older-style implementation. Likely unnessecary now.
 
-    
-    String inDataStr(inData);
-    inDataStr.replace("-", "");
-    
-    
-    // say what you got:
-    //Serial.print("I received: ");
-    //Serial.println(inDataStr);
-
-    if(inDataStr.startsWith("OFF")){
+    if(command.startsWith("OFF")){
       Serial.println("Turn OFF Data Collection");
       myFuns.DataColectionOff(0);                 
     }
-    else if (inDataStr.startsWith("ON")){
+    else if (command.startsWith("ON")){
       Serial.println("Turn ON Data Collection");
       myFuns.DataColectionOn(0);
     }
-    else if (inDataStr.startsWith("ON1")){
-      Serial.println("Turn ON Data Collection");
-      myFuns.DataColectionOn(0);
-    }
-    else if (inDataStr.startsWith("RS01")){
+    else if (command.startsWith("RS01")){
       Serial.println("Reset SD Card");
     }
-    else if (inDataStr.startsWith("RS00")){
+    else if (command.startsWith("RS00")){
       Serial.println("Reset Device");
       myFuns.DataColectionOff(0);
       myFuns.ResetArduino();
     }
-    else if (inDataStr.startsWith("SAVE")){
+    else if (command.startsWith("SAVE")){
       Serial.println("Save Settings to EEPORM");
       myFuns.SaveLightSensorSettings();
     }
-    else if (inDataStr.startsWith("READ")){
+    else if (command.startsWith("READ")){
       Serial.println("READ Settings from EEPORM");
       myFuns.ReadLightSensorSettings();
     }
-    else if (inDataStr.startsWith("MOD")){
+    else if (command.startsWith("MOD")){
       //Serial.println("Modify sensor settings");
-      myFuns.ModifyLightSensorSettings(inData,inDataStr);
-    }
-    else if (inDataStr.startsWith("DEF")){
-      Serial.println("Revert Sensor Settings to Default");
-      //ModifyLightSensorSettings(inData);
-    }
-    
-    else if (inDataStr.startsWith("DISP")){
+      myFuns.ModifyLightSensorSettings(command);
+    }    
+    else if (command.startsWith("DISP")){
       Serial.println("Current Settings");
       myFuns.SensorStateDisp();
     }
 
-    else if (inDataStr.startsWith("RDFREQ")){
+    else if (command.startsWith("RDFREQ")){
         Serial.println(desiredFreq);
     }
 
-    else if (inDataStr.startsWith("TRIG")){
-      if (inDataStr.substring(4,6)=="ON"){
+    else if (command.startsWith("TRIG")){
+      if (command.substring(4,6)=="ON"){
         triggerMode=1;
       }
       else{
         triggerMode=0;
       }
+    }   
+    else if (command.startsWith("FREQ")){
+      myFuns.UpdateFreq(command);
+    }
+    else{
+      Serial.println("Unrecognized Command");
     }
 
-    else if (inDataStr.startsWith("SDN")){
-        int desiredNum = inDataStr.substring(3).toInt();
-        myFuns.setFileName(desiredNum);
-        Serial.print("New SD File Number: ");
-        Serial.println(desiredNum);
-    }
-    
-    
-    else if (inDataStr.startsWith("FREQ")){
-      
-      desiredFreq = inDataStr.substring(4).toFloat();
-
-      /*if (freq>20 || freq<=0){
-          Serial.print("Invalid Frequency: ");
-          Serial.print(freq);
-          Serial.println("    Try Again!");
-      }
-      else{ */
-
-          if (state==0){
-          Serial.print("New Frequency: ");
-          Serial.println(desiredFreq);
-          }
-                 
-          //DataColectionOff(1);
-          myFuns.DataColectionOff(2);
-          myFuns.TimerMath(desiredFreq);
-          if(state==1){
-              myFuns.DataColectionOn(1);
-          }
-    //}
-
-    
-
-}
-else{
-
-  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< This might not work with software serial
-  Serial.println("Unrecognized Command");
-  while(Serial.available() > 0)
-   Serial.read();
-  }
   
-    }
-
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< This might not work with software serial
-else{
-  Serial.println("Unrecognized Command");
-  while(Serial.available() > 0)
-   Serial.read();
-  }
-
-
 }
-}
-    
-void triggerISR(){
-  collectingData=1;
-  }
+
+
+
+
+
 
 

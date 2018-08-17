@@ -2,7 +2,7 @@
 #include "VarDefs.h"
 
 //STATE MACHINE
-    int state = 0;
+    int dataOn = 0;
 
 
 //EEPROM
@@ -71,14 +71,13 @@
 
 //INTERRUPTS
     //Storage variables
-         boolean toggle0 = 0;
-         int togglePin = 4;
          long t_out = 0;
     
     //Set up parameters
          long clockFreq = 8000000L;
          long counterRes = pow(2,16);
          float desiredFreq = 10;
+         int desiredLoopTime = int((1/desiredFreq)*1000);
     
     
     //Set up Variables

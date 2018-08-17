@@ -4,7 +4,7 @@
 #include "Arduino.h"
 
 //STATE MACHINE
-    extern  int state;
+    extern  int dataOn;
 
 
 //EEPROM
@@ -70,14 +70,13 @@
 
 //INTERRUPTS
     //Storage variables
-        extern boolean toggle0;
-        extern int togglePin;
         extern long t_out;
     
     //Set up parameters
         extern long clockFreq;
         extern long counterRes;
         extern float desiredFreq;
+        extern int desiredLoopTime;
     
     
     //Set up Variables

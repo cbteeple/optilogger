@@ -17,30 +17,17 @@ CustomFuns::CustomFuns();
       if (!silent){
           Serial.println("Collect Data: Turn Off");
       }
-      
-        //Stop the Timer Compare Interrupt
-            TCCR1B = 0x00; //(1 << CS12) | (1 << CS10);
             
       if (silent!=2){
-          state=0;
+          dataOn=0;
       }
     }
     
     void CustomFuns::DataColectionOn(int silent){
-
         if (!silent){
             Serial.println("Collect Data: Turn On");
         }
-            OCR1A = outputCompare;
-        //Start the Timer Compare Interrupt
-            TCCR1B |= clockInputSelect; //(1 << CS12) | (1 << CS10);  
-            // turn on CTC mode
-                TCCR1B |= (1 << WGM12);
-        sei();
-        if (!silent){
-           
-        }
-        state=1;
+        dataOn=1;
     }
 
 
@@ -169,9 +156,10 @@ CustomFuns::CustomFuns();
       }
 
 
-    void CustomFuns::ModifyLightSensorSettings(char inData[6],String inDataStr){
+    void CustomFuns::ModifyLightSensorSettings(String inDataStr){        
         Serial.print("Modifying Sensor Settings for ");
-        Serial.println(inData);
+        Serial.println(inDataStr);
+        
 
         int len= inDataStr.length();
 
@@ -193,19 +181,19 @@ CustomFuns::CustomFuns();
 
         else{
         
-            int senseNum = inData[3] - '0';
+            int senseNum = inDataStr.substring(3,4).toInt();
             //Serial.print("Sensor Number: ");
             //Serial.print(senseNum);
             //Serial.print('\t');
             
             if (len>=5){
    
-                    int senseON = inData[4] - '0';
+                    int senseON = inDataStr.substring(4,5).toInt();
                     lightSensorActive[senseNum] = senseON;
                               
             }
             if (len==6){
-                int senseSet = inData[5] - '0';
+                int senseSet = inDataStr.substring(5,6).toInt();
                 //Serial.print("Setting: ");
                 //Serial.println(senseSet);
                 lightSensorSettings[senseNum] = byte((senseSet << 2) | 1);
@@ -272,7 +260,6 @@ CustomFuns::CustomFuns();
 
 
     void CustomFuns::AquireData(){
-      sei();
 
         long t_out=millis();
         pressure= CustomFuns::GetPressureData();
@@ -334,6 +321,22 @@ CustomFuns::CustomFuns();
       
       
       }
+
+
+
+
+void CustomFuns::UpdateFreq(String command){
+  desiredFreq = command.substring(4).toFloat();
+  desiredLoopTime = int((1/desiredFreq)*1000);
+  
+  if (!dataOn){
+    Serial.print("New Frequency: ");
+    Serial.println(desiredFreq);
+  }  
+}
+
+
+
 
 
 //ANALOG PRESSURE GAUGE

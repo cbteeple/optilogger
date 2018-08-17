@@ -33,9 +33,10 @@ class CustomFuns
     		//LIGHT SENSORS
           void InitializeSensors(void);
     			void SensorStateDisp();
-    			void ModifyLightSensorSettings(char[6],String);
+    			void ModifyLightSensorSettings(String);
     			void SetLightSensorSettings(int);
           void AquireData();
+          void UpdateFreq(String);
 
         //ANALOG PRESSURE GAUGE
           float GetPressureData();
