@@ -457,7 +457,8 @@ D = 10^(d-ceil(log10(handles.freq)));
 y = round(handles.freq*D)/D;
 
 
-fprintf(handles.s,'%c%f\n','FREQ',y);
+
+fprintf(handles.s,'%s\n',['FREQ',num2str(y)]);
 
 
 guidata(handles.output, handles);
