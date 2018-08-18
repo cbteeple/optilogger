@@ -27,3 +27,5 @@
 
 ## [1.0] - 2018-07-31
 ### Initial Release
+
+[1.1]: https://github.com/cbteeple/optilogger/compare/v1.0...v1.1
