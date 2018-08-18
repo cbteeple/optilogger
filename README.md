@@ -19,7 +19,9 @@ OptiLogger is aset of arduino code and MATLAB code that coordinates data collect
 ### Arduino
 #### Introduction
 The embedded software is written in the Arduino flavor of C++.
-To run it, open the* Light_Intensity_Reader_ALL.ino* file, and upload the code to your Arduino Nano.
+
+#### How to run it
+Open the *"Light_Intensity_Reader_ALL.ino"* file in the Arduino IDE, and upload the code to your Arduino Nano.
 
 #### How it works:
 Based on commands from a computer, the built-in sensitivity ranges of the sensors are set and data can be collected. This program recieves serial data from a computer to control it (that's how MATLAB interfaces with it). Each sensor's range can be configured from 1x to 96x, and each LED can be turned on and off. The code can also operate in trigger mode
@@ -44,7 +46,13 @@ Based on commands from a computer, the built-in sensitivity ranges of the sensor
 	- Stop collecting data
 
 ### MATLAB GUI
+
+#### Introduction
 There is a matlab GUI that can send all of these commands, and recieve and store data. It is pretty user-friendly, so documentation is sparse.
+
+#### How to run it
+Open *"MainApp.m"* and run it. Everything is automatic from there
+
 
 ## [ChangeLog]
 Check out the [change log] for info about new versions
